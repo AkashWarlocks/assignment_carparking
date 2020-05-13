@@ -1,0 +1,64 @@
+{
+	"info": {
+		"_postman_id": "73bd3b36-638b-4e20-a820-cd143d1772d4",
+		"name": "parking",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "addlevel",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"levelNo\":\"1\",\n\t\"row\":[\n\t\t{\n\t\t\"rowNo\":\"1\",\n\t\t\"slots\":[{\n\t\t\t\"slotNo\":1,\n\t\t\t\"slotType\":\"Motorcycle\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"slotNo\":2,\n\t\t\t\"slotType\":\"Motorcycle\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"slotNo\":3,\n\t\t\t\"slotType\":\"Motorcycle\"\n\t\t\t},{\n\t\t\t\"slotNo\":4,\n\t\t\t\"slotType\":\"Compact\"\n\t\t\t},{\n\t\t\t\"slotNo\":5,\n\t\t\t\"slotType\":\"Compact\"\n\t\t\t},{\n\t\t\t\"slotNo\":6,\n\t\t\t\"slotType\":\"Compact\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"slotNo\":7,\n\t\t\t\"slotType\":\"Large\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"slotNo\":8,\n\t\t\t\"slotType\":\"Large\"\n\t\t\t}]\n\t\t},\n\t\t{\n\t\t\"rowNo\":\"2\",\n\t\t\"slots\":[{\n\t\t\t\"slotNo\":1,\n\t\t\t\"slotType\":\"Motorcycle\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"slotNo\":2,\n\t\t\t\"slotType\":\"Motorcycle\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"slotNo\":3,\n\t\t\t\"slotType\":\"Motorcycle\"\n\t\t\t},{\n\t\t\t\"slotNo\":4,\n\t\t\t\"slotType\":\"Compact\"\n\t\t\t},{\n\t\t\t\"slotNo\":5,\n\t\t\t\"slotType\":\"Compact\"\n\t\t\t},{\n\t\t\t\"slotNo\":6,\n\t\t\t\"slotType\":\"Compact\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"slotNo\":7,\n\t\t\t\"slotType\":\"Large\"\n\t\t\t},\n\t\t\t{\n\t\t\t\"slotNo\":8,\n\t\t\t\"slotType\":\"Large\"\n\t\t\t}]\n\t\t}]\n\t\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/addLevel",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"addLevel"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "allotParking",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"carType\":\"Motorcycle\",\n\t\"vehicleNo\":\"MH041234\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:3000/allotparking",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"allotparking"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
