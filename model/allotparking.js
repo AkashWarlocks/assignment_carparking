@@ -24,16 +24,21 @@ const allotParkingSchema = new mongoose.Schema({
                     occupied:{
                         type:Boolean,
                         required:true,
+                        default:false,
                     },
                     currentVehicle:{
                         type:String,
                     }               
                 }],
+                rowIsFull:{
+                    type:Boolean,
+                    default:false
+                }
 
         }],
         totalrows:{
             type:Number,
-            required:true
+            
         },
         levelIsFull:{
             type:Boolean,
