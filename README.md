@@ -1,12 +1,11 @@
-# assignment_carparking
-
-# Vehicle Parking Slot Allotment System
+# Vehicle Parking Slot Allotment System 
 
 # Technology stack:
-  1.Backend - Nodejs
+  1. Backend - Nodejs
   2.Frontend - Angular
   3.Database - MongoDB
   4.Server - Heroku
+  
 # Working - 
   1. # Slot allotment - 
       - Used Nodejs and Advance Mongo Queries(aggregations) for finding empty slots on following conditions
