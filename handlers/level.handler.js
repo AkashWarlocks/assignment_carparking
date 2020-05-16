@@ -113,7 +113,7 @@ levelHandler.allotParking = async(req,res)=>{
                     slotId_3:data[i+2].slots._id,
                     slotId_4:data[i+3].slots._id,
                     slotId_5:data[i+4].slots._id,
-                    
+                    slotNo:data[i].slots.slotNo+" "+data[i+1].slots.slotNo+" "+data[i+2].slots.slotNo+" "+data[i+3].slots.slotNo+" "+data[i+4].slots.slotNo,
                     slotNo_1:data[i].slots.slotNo,
                     slotNo_2:data[i+1].slots.slotNo,
                     slotNo_3:data[i+2].slots.slotNo,
