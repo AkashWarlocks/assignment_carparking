@@ -22,8 +22,11 @@ levelHandler.addLevel = async (req,res)=>{
 
 levelHandler.addRow = async (req,res)=>{
     try {
+        console.log("start")
         const addRow =  new Row(req.body)    
+        console.log("save")
         await addRow.save()
+        
         res.status(200).send({
             status:"Row added",
             data:addRow    
@@ -58,6 +61,9 @@ levelHandler.allotParking = async(req,res)=>{
                     {$match:{"slots.occupied":false}
             }])
             console.log(data) 
+            if(data.length == 0){
+                res.status(200).send(avail)
+            }
             
             avail = {
                 status:"Parking Available",
