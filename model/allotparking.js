@@ -2,7 +2,7 @@ const mongoose = require('mongoose')
 
 const allotParkingSchema = new mongoose.Schema({   
     levelNo:{
-            type:String,
+            type:Number,
             required:true,
         },
     row:[{
@@ -10,6 +10,7 @@ const allotParkingSchema = new mongoose.Schema({
                 type:String,
                 required:true,
             },
+            
             slots:[
                 {
                     slotNo:{
