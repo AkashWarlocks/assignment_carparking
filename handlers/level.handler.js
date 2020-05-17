@@ -3,7 +3,7 @@ const AllotParking = require('../model/allotparking')
 const Level = require('../model/level')
 const Row = require('../model/row')
 let levelHandler = {}
-
+//Function to Add a Level
 levelHandler.addLevel = async (req,res)=>{
     
     try {
@@ -20,6 +20,7 @@ levelHandler.addLevel = async (req,res)=>{
     
 }
 
+//Function to Add a Row
 levelHandler.addRow = async (req,res)=>{
     try {
         console.log("start")
@@ -37,6 +38,7 @@ levelHandler.addRow = async (req,res)=>{
     }
 
 }
+//Allot parking Slot function
 levelHandler.allotParking = async(req,res)=>{
     try {
         console.log(req.body)
@@ -55,12 +57,15 @@ levelHandler.allotParking = async(req,res)=>{
             rowNo:"Not available",
             slotNo:"Not available"
         }
+
+        //Checks if Vehicle is already present
         let checkVehicleAvailable = await Row.aggregate([
             {$unwind:"$slots"},
             {$match:{"slots.vehicleNo":req.body.vehicleNo}}
         ])
         
         if(req.body.carType=="Motorcycle" && checkVehicleAvailable.length == 0){
+            //Allocation for vehicle type motorcycle
                 data = await Row.aggregate([
                     {$unwind:"$slots"},
                     {$match:{"slots.occupied":false}
@@ -93,6 +98,7 @@ levelHandler.allotParking = async(req,res)=>{
             console.log("update ",update)
 
         } else if(req.body.carType=="Bus" && checkVehicleAvailable.length == 0){
+            //Allocation for vehicle Bus
             data = await Row.aggregate([
                 {$unwind:"$slots"},
                 {$match:{
@@ -106,7 +112,7 @@ levelHandler.allotParking = async(req,res)=>{
                 }}
             ])
         console.log(data)
-        
+        //LOGIC FOR 5 Large Spots in linear fashion
         for(var i=0 ;i<data.length;i++){
             
             if(data[i+1] && data[i+2] && data[i+3] && data[i+4] && (data[i].levelNo == data[i+4].levelNo)&& ( data[i].rowNo == data[i+4].rowNo)){
@@ -158,7 +164,7 @@ levelHandler.allotParking = async(req,res)=>{
          
         console.log(avail)   
     } else if(req.body.carType=="Car" && checkVehicleAvailable.length == 0){
-            //Allocate Parking for Car
+            ////Allocation for vehicle type motorcycle
             data = await Row.aggregate([
                 {$unwind:"$slots"},
                 {$match:{
@@ -213,6 +219,8 @@ levelHandler.allotParking = async(req,res)=>{
         })
     }
 }
+
+//Function to get Single vehicle info
 levelHandler.getVehicleInfo = async(req,res)=>{
     let vehicleStatus = {
         status:"Not Available",
@@ -236,7 +244,7 @@ levelHandler.getVehicleInfo = async(req,res)=>{
         
     }
 }
-
+// Function to get Parked vehicle Data
 levelHandler.getParkeddata = async(req,res)=> {
     //console.log(req.body)
     slotType=[]
@@ -272,6 +280,7 @@ levelHandler.getParkeddata = async(req,res)=> {
         res.status(400).send(error)
     }
 }
+//Used to call API from postman to deallocate all spots
 levelHandler.deAllocateAll = async(req,res)=>{
     try {
         console.log("dela ",req.body)
@@ -295,19 +304,20 @@ levelHandler.deAllocateAll = async(req,res)=>{
         res.status(400).send(error)
     }
 }
+//Function to deallocate single spot
 levelHandler.deAllocateSpot = async (req,res)=>{
     
     
     try {
-        console.log("dela ",req.body)
+       // console.log("dela ",req.body)
         let data = await Row.updateMany({
             "slots.startSlot": req.body.slots.startSlot
         },{
             $set:{
                 "slots.$[elem].occupied":false,
-                "slot.$[elem].startSlot":null,
-                "slot.$[elem].vehicletype":null,
-                "slot.$[elem].vehicleNo":null,
+                "slot.$[elem].startSlot":"empty",
+                "slot.$[elem].vehicletype":"empty",
+                "slot.$[elem].vehicleNo":"empty",
             }
         },{ arrayFilters:[{
             "elem.startSlot":req.body.slots.startSlot
@@ -320,7 +330,7 @@ levelHandler.deAllocateSpot = async (req,res)=>{
         res.status(400).send(error)
     }
 }
-
+//Function to count no. of vehicles parked and their types
 levelHandler.getCountVehicle = async(req,res)=>{
     let vehicleCount = {
         "Motorcycle":0,
