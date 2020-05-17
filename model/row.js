@@ -26,6 +26,12 @@ const rowSchema = new mongoose.Schema({
         },
         startSlot:{
             type:String
+        },
+        vehicleNo:{
+            type:String
+        },
+        vehicletype:{
+            type:String
         }
     
     }]

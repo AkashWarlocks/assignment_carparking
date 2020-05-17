@@ -7,7 +7,7 @@ let levelHandler = {}
 levelHandler.addLevel = async (req,res)=>{
     
     try {
-        const addLevel =  new evel(req.body)    
+        const addLevel =  new Level(req.body)    
         await addLevel.save()
         res.status(200).send({
             status:"Level added",
@@ -49,13 +49,18 @@ levelHandler.allotParking = async(req,res)=>{
     //         {$match:{"row.slots.occupied":true,"row.slots.slotType":"Large"}
     //     }])
         
-        //console.log(data)
+    //console.log(data)
         let avail={
             status:"parking Not Available",
             rowNo:"Not available",
             slotNo:"Not available"
         }
-        if(req.body.carType=="Motorcycle"){
+        let checkVehicleAvailable = await Row.aggregate([
+            {$unwind:"$slots"},
+            {$match:{"slots.vehicleNo":req.body.vehicleNo}}
+        ])
+        
+        if(req.body.carType=="Motorcycle" && checkVehicleAvailable.length == 0){
                 data = await Row.aggregate([
                     {$unwind:"$slots"},
                     {$match:{"slots.occupied":false}
@@ -79,12 +84,15 @@ levelHandler.allotParking = async(req,res)=>{
                 "slots._id":avail.slotId
             },{
                 $set:{
-                    "slots.$.occupied":true
+                    "slots.$.occupied":true,
+                    "slots.$.startSlot":avail.slotId,
+                    "slots.$.vehicletype":req.body.carType,
+                    "slots.$.vehicleNo":req.body.vehicleNo
                 }
             })
             console.log("update ",update)
 
-        } else if(req.body.carType=="Bus"){
+        } else if(req.body.carType=="Bus" && checkVehicleAvailable.length == 0){
             data = await Row.aggregate([
                 {$unwind:"$slots"},
                 {$match:{
@@ -101,7 +109,8 @@ levelHandler.allotParking = async(req,res)=>{
         
         for(var i=0 ;i<data.length;i++){
             
-            if(data[i+1] && data[i+2] && data[i+3] && data[i+4] && data[i].levelNo == data[i+1].levelNo && data[i].rowNo == data[i+1].rowNo){
+            if(data[i+1] && data[i+2] && data[i+3] && data[i+4] && (data[i].levelNo == data[i+4].levelNo)&& ( data[i].rowNo == data[i+4].rowNo)){
+                console.log("inside If")
                 avail = {
                     status:"Parking Available",
                     levelNo:data[i].levelNo,
@@ -129,7 +138,9 @@ levelHandler.allotParking = async(req,res)=>{
             },{
                 $set:{
                     "slots.$[elem].occupied":true,
-                    "slots.$[elem].startSlot":avail.slotId_1
+                    "slots.$[elem].startSlot":avail.slotId_1,
+                    "slots.$[elem].vehicleNo":req.body.vehicleNo,
+                    "slots.$[elem].vehicletype":req.body.carType
                 }
             },{
                 arrayFilters:[{
@@ -146,7 +157,7 @@ levelHandler.allotParking = async(req,res)=>{
         console.log("update ",update)
          
         console.log(avail)   
-    } else if(req.body.carType=="Car"){
+    } else if(req.body.carType=="Car" && checkVehicleAvailable.length == 0){
             //Allocate Parking for Car
             data = await Row.aggregate([
                 {$unwind:"$slots"},
@@ -162,7 +173,7 @@ levelHandler.allotParking = async(req,res)=>{
                     rowNo:1
                 }}
             ])
-            console.log(data)
+            //console.log(data)
         //console.log(data) 
     
             avail = {
@@ -174,18 +185,24 @@ levelHandler.allotParking = async(req,res)=>{
                 slotNo:data[0].slots.slotNo
             }
 
-            console.log(avail)
+            //console.log(avail)
             let update = await Row.updateOne({
                 "_id":avail.rowId,
                 "slots._id":avail.slotId
             },{
                 $set:{
-                    "slots.$.occupied":true
+                    "slots.$.occupied":true,
+                    "slots.$.startSlot":avail.slotId,
+                    "slots.$.vehicletype":req.body.carType,
+                    "slots.$.vehicleNo":req.body.vehicleNo
                 }
             })
             console.log("update ",update)
 
-} 
+}   if(checkVehicleAvailable.length != 0) {
+    console.log("in if")
+    avail.status = "Vehicle is already present"
+ }
 
     res.status(200).send(avail)
  
@@ -196,8 +213,31 @@ levelHandler.allotParking = async(req,res)=>{
         })
     }
 }
+levelHandler.getVehicleInfo = async(req,res)=>{
+    let vehicleStatus = {
+        status:"Not Available",
+        data:""
+    }
+    try {
+        console.log(req.body)
+    let data = await Row.aggregate([
+            {$unwind:"$slots"},
+            {$match:{"slots.vehicleNo":req.body.vehicleNo}        
+    }])
+    if(data.length!=0){
+        vehicleStatus={
+            status:"Vehicle Available",
+            data:data
+        }
+    }
 
-levelHandler.getParkeddata = async(req,res)=>{
+    res.status(200).send(vehicleStatus) 
+    } catch (error) {
+        
+    }
+}
+
+levelHandler.getParkeddata = async(req,res)=> {
     //console.log(req.body)
     slotType=[]
     try {
@@ -210,7 +250,7 @@ levelHandler.getParkeddata = async(req,res)=>{
         } else if(req.body.carType == "ALL"){
             slotType = ["Motorcycle","Compact","Large"]
         }
-        console.log(slotType)
+        //console.log(slotType)
         data = await Row.aggregate([
             {$unwind:"$slots"},
             {$match:{
@@ -229,24 +269,109 @@ levelHandler.getParkeddata = async(req,res)=>{
 
         res.status(200).send(data)
     } catch (error) {
-        
+        res.status(400).send(error)
     }
 }
-
-levelHandler.deAllocateSpot = async (req,res)=>{
+levelHandler.deAllocateAll = async(req,res)=>{
     try {
         console.log("dela ",req.body)
         let data = await Row.updateMany({
-            "slots.startSlot": req.body.startSlot
+            "slots.occupied": true
         },{
             $set:{
-                "slots.$[elem]occupied":false
+                "slots.$[elem].occupied":false,
+                "slot.$[elem].startSlot":'',
+                "slot.$[elem].vehicletype":'',
+                "slot.$[elem].vehicleNo":'',
             }
-        },{
+        },{ arrayFilters:[{
+            "elem.occupied":true
+        }],
             multi:true
         }
     )
     res.status(200).send(data)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+}
+levelHandler.deAllocateSpot = async (req,res)=>{
+    
+    
+    try {
+        console.log("dela ",req.body)
+        let data = await Row.updateMany({
+            "slots.startSlot": req.body.slots.startSlot
+        },{
+            $set:{
+                "slots.$[elem].occupied":false,
+                "slot.$[elem].startSlot":null,
+                "slot.$[elem].vehicletype":null,
+                "slot.$[elem].vehicleNo":null,
+            }
+        },{ arrayFilters:[{
+            "elem.startSlot":req.body.slots.startSlot
+        }],
+            multi:true
+        }
+    )
+    res.status(200).send(data)
+    } catch (error) {
+        res.status(400).send(error)
+    }
+}
+
+levelHandler.getCountVehicle = async(req,res)=>{
+    let vehicleCount = {
+        "Motorcycle":0,
+        "Car":0,
+        "Bus":0,
+        "Total":0
+    }
+    try {
+        motorcycle = await Row.aggregate([
+            {$unwind:"$slots"},
+            {$match:{
+                "slots.occupied":true,
+                "slots.vehicletype":"Motorcycle"
+            }
+            },
+            {$sort:{
+                levelNo:1,
+                rowNo:1
+            }}
+        ])
+        bus = await Row.aggregate([
+            {$unwind:"$slots"},
+            {$match:{
+                "slots.occupied":true,
+                "slots.vehicletype":"Bus"
+            }
+            },
+            {$sort:{
+                levelNo:1,
+                rowNo:1
+            }}
+        ])
+        car = await Row.aggregate([
+            {$unwind:"$slots"},
+            {$match:{
+                "slots.occupied":true,
+                "slots.vehicletype":"Car"
+            }
+            },
+            {$sort:{
+                levelNo:1,
+                rowNo:1
+            }}
+        ])
+        vehicleCount={
+            "Motorcycle":motorcycle.length,
+            "Bus":(bus.length/5),
+            "Car":car.length,
+            "Total":motorcycle.length +(bus.length/5) + car.length
+        }
+        res.status(200).send(vehicleCount)
     } catch (error) {
         
     }

@@ -22,4 +22,16 @@ router.post('/getParkedData', async(req,res)=>{
 router.post('/deAllocateSpot',async (req,res)=>{
     await levelhandler.deAllocateSpot(req,res)
 })
+
+router.post('/getVehicleDetails',async(req,res)=>{
+    await levelhandler.getVehicleInfo(req,res)
+})
+
+router.post('/deAllocateAll', async(req,res)=>{
+    await levelhandler.deAllocateAll(req,res)
+})
+
+router.post('/getVehicleCount', async(req,res)=>{
+    await levelhandler.getCountVehicle(req,res)
+})
 module.exports = router
