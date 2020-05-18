@@ -558,12 +558,13 @@ class HomeComponentComponent {
             }
         };
         this.HttpService.httpPost(data).subscribe((res) => {
-            console.log(res);
-            this.currentPark.levelNo = res.data[0].levelNo;
-            this.currentPark.rowNo = res.data[0].rowNo;
-            this.currentPark.slotNo = res.data[0].slots.slotNo;
-            this.currentPark.vehicleType = res.data[0].slots.vehicletype;
-            this.currentPark.slotType = res.data[0].slots.slotType;
+            console.log("allot", res);
+            this.currentPark.status = res.status;
+            this.currentPark.levelNo = res.levelNo;
+            this.currentPark.rowNo = res.rowNo;
+            this.currentPark.slotNo = res.slotNo;
+            this.currentPark.vehicleType = res.slots.vehicletype;
+            this.currentPark.slotType = res.slots.slotType;
         });
     }
     print() {
@@ -757,11 +758,11 @@ HomeComponentComponent.ɵcmp = _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵd
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](14);
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("Status: ", ctx.currentVehicle.status, "");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("Level Number: ", ctx.currentVehicle.data[0].levelNo, "");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("Level Number: ", ctx.currentVehicle.levelNo, "");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("Row Number: ", ctx.currentVehicle.data[0].rowNo, "");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("Row Number: ", ctx.currentVehicle.rowNo, "");
         _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵadvance"](3);
-        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("Slot Number:", ctx.currentVehicle.data[0].slots.slotNo, "");
+        _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵɵtextInterpolate1"]("Slot Number:", ctx.currentVehicle.slotNo, "");
     } }, directives: [_angular_forms__WEBPACK_IMPORTED_MODULE_1__["ɵangular_packages_forms_forms_y"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["NgControlStatusGroup"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormGroupDirective"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["SelectControlValueAccessor"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["NgControlStatus"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["FormControlName"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["NgSelectOption"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["ɵangular_packages_forms_forms_x"], _angular_forms__WEBPACK_IMPORTED_MODULE_1__["DefaultValueAccessor"]], styles: ["\n/*# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJzb3VyY2VzIjpbXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IiIsImZpbGUiOiJzcmMvYXBwL2hvbWUtY29tcG9uZW50L2hvbWUtY29tcG9uZW50LmNvbXBvbmVudC5jc3MifQ== */"] });
 /*@__PURE__*/ (function () { _angular_core__WEBPACK_IMPORTED_MODULE_0__["ɵsetClassMetadata"](HomeComponentComponent, [{
         type: _angular_core__WEBPACK_IMPORTED_MODULE_0__["Component"],

@@ -8,7 +8,7 @@
 
 # installation
     1. npm i 
-# Run
+# Run 
     2. npm run dev
     
 # Working - 
