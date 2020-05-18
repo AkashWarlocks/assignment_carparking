@@ -1,10 +1,10 @@
 # Vehicle Parking Slot Allotment System 
 
 # Technology stack:
-  1. Backend - Nodejs
-  2.Frontend - Angular
-  3.Database - MongoDB
-  4.Server - Heroku
+    1. Backend - Nodejs
+    2.Frontend - Angular
+    3.Database - MongoDB
+    4.Server - Heroku
   
 # Working - 
   1. # Slot allotment - 
