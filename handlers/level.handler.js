@@ -238,7 +238,12 @@ levelHandler.getVehicleInfo = async(req,res)=>{
             data:data
         }
     }
-
+    if(req.body.vehicleNo == ''){
+        vehicleStatus = {
+            status:"Please enter Vehicle Number",
+            data:"" 
+        }
+    }
     res.status(200).send(vehicleStatus) 
     } catch (error) {
         
@@ -289,11 +294,12 @@ levelHandler.deAllocateAll = async(req,res)=>{
         },{
             $set:{
                 "slots.$[elem].occupied":false,
-                "slot.$[elem].startSlot":'',
-                "slot.$[elem].vehicletype":'',
-                "slot.$[elem].vehicleNo":'',
+                "slots.$[elem].startSlot":'',
+                "slots.$[elem].vehicletype":'',
+                "slots.$[elem].vehicleNo":'',
             }
-        },{ arrayFilters:[{
+        },{ 
+            arrayFilters:[{
             "elem.occupied":true
         }],
             multi:true
@@ -315,14 +321,14 @@ levelHandler.deAllocateSpot = async (req,res)=>{
         },{
             $set:{
                 "slots.$[elem].occupied":false,
-                "slot.$[elem].startSlot":"empty",
-                "slot.$[elem].vehicletype":"empty",
-                "slot.$[elem].vehicleNo":"empty",
+                "slots.$[elem].startSlot":"",
+                "slots.$[elem].vehicletype":"",
+                "slots.$[elem].vehicleNo":"",
             }
         },{ arrayFilters:[{
             "elem.startSlot":req.body.slots.startSlot
         }],
-            multi:true
+            multi:true,
         }
     )
     res.status(200).send(data)
